@@ -1,4 +1,4 @@
-```markdown
+
 # M-BEHRT: A Multimodal BERT Model for Electronic Health Records
 
 M-BEHRT is an adaptation of the BERT architecture tailored for multimodal electronic health records (EHRs). Designed to process and integrate information from diverse clinical data modalities, M-BEHRT leverages the complementary strengths of **free-text reports**, **biological features**, and **clinical descriptors** to provide a comprehensive patient representation.
