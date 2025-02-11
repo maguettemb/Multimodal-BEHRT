@@ -15,10 +15,5 @@ This component is tailored for processing **structured, tabular data** commonly 
 
 ## Multimodal Fusion
 
-The integration of Text BEHRT and Tabular BEHRT enables M-BEHRT to effectively combine information from different modalities. 
+We use a cross-attention module to integrate Text BEHRT and Tabular BEHRT. It enables M-BEHRT to effectively combine information from different modalities.
 
-## Advantages of M-BEHRT
-
-- **Holistic Patient Representation**: By combining free-text and structured data, M-BEHRT provides a more comprehensive view of patient health.
-- **Enhanced Predictive Performance**: The model's ability to leverage both modalities results in improved performance on tasks such as disease prediction, risk stratification, and treatment recommendation.
-- **Scalability**: M-BEHRT can be fine-tuned for specific healthcare applications, making it a versatile tool for clinical and research settings.
