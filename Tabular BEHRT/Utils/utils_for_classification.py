@@ -177,4 +177,62 @@ def set_seed(seed_value=42):
     np.random.seed(seed_value)
     torch.manual_seed(seed_value)
     torch.cuda.manual_seed_all(seed_value)
-    
+
+
+""" Empty the cache to enable the use of the gpu """
+
+def empty_cuda():
+    torch.cuda.empty_cache()
+    print(torch.cuda.memory_summary(device=None, abbreviated=False))
+
+    from sklearn.utils import gen_even_slices  
+
+
+class StratifiedSampler(Sampler):
+    """
+    Over Sampling
+    Provides equal representation of target classes in each batch
+    Uses all the data
+    Truly splits the data in batches like torch's BatchSampler
+    """
+    def __init__(self, X, y, batch_size, minority_pct=0.5):
+        """
+        Arguments
+        ---------
+        class_vector : torch tensor
+            a vector of class labels
+        batch_size : integer
+            batch_size
+        """
+        self.X = X
+        self.y = torch.from_numpy(y.values)
+        self.batch_size = batch_size
+        self.minority_pct = minority_pct 
+        # The number of splits/batches depends on how many samples
+        # from the minority class we want to put in each batch
+        self.n_splits = int(self.y.size(0) / (self.minority_pct * self.batch_size))
+
+    def __iter__(self):        
+        minority_idxs = np.where(self.y==1)[0]
+        majority_idxs = np.where(self.y==0)[0]
+        
+        num_majority = len(majority_idxs)
+        slices_generator = gen_even_slices(num_majority, self.n_splits)
+        
+        # Shuffle the majority class
+        np.random.shuffle(majority_idxs)
+                    
+        # Random oversample of the whole minority class
+        # to obtain as many samples as in the majority class
+        minority_resampled = np.random.choice(minority_idxs, len(majority_idxs), replace=True)
+
+        for sl in slices_generator:
+            #print(sl)
+            majority = majority_idxs[sl]
+            minority = minority_resampled[sl]
+            idxs = list(np.hstack([majority, minority]))
+            yield idxs
+     
+    def __len__(self):
+        # The iterator length is the number of batches
+        return self.n_splits
